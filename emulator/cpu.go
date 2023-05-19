@@ -198,11 +198,6 @@ func (c *CPU) draw() {
 	}
 }
 
-func (c *CPU) popStack() uint16 {
-	c.sp--
-	return c.stack[c.sp+1]
-}
-
 func (c *CPU) tick() {
 	// fetch current opcode
 	var currentOpCode = uint16(c.ram[c.pc]) << 8 | uint16(c.ram[c.pc + 1])
@@ -220,7 +215,8 @@ func (c *CPU) tick() {
 					c.renderer.Clear()
 				// RET
 				case 0xEE:
-					c.pc = c.popStack()
+					c.pc = c.stack[c.sp]
+					c.sp--
 				default:
 					panic(fmt.Sprintf("Unknown Instruction: %X\n", currentOpCode))
 			}
